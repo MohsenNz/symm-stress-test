@@ -10,4 +10,4 @@ or
 k6 run --vus 500 --duration 120s <test-name>
 ```
 
-`--vus` : concurrency
+`--vus` : virtual users
