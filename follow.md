@@ -69,12 +69,19 @@ Unlike L1 geth, Orbit sequencer:
 - does extra fraud-proof metadata
 -> eth_call can kill sequencer faster than L1 geth.
 
-⚠️ eth_getLogs is worse on Orbit
-
+### eth_getLogs is worse on Orbit
 Orbit chains often have less indexed infra, so logs scan raw state.
 
-⚠️ Single-node = SPOF
-
+### Single-node = SPOF
 RPC stress can halt consensus if node is sequencer.
 
-👉 Run RPC on a non-sequencer replica in real prod.
+-> Run RPC on a non-sequencer replica in real prod.
+
+Operational Recommendations
+---
+
+- Separate sequencer and RPC nodes in production deployments.
+- Rate-limit `eth_getLogs` and heavy RPC endpoints.
+- Enable Prometheus/Grafana monitoring for real-time performance visibility.
+- Scale horizontally using multiple RPC nodes behind a load balancer for production workloads.
+- Apply OS and TCP tuning to support high concurrent connections.

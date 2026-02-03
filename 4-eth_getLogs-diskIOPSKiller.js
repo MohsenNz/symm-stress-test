@@ -15,10 +15,12 @@ export default function() {
     method: "eth_getLogs",
     params: [{
       fromBlock: "0x0",
-      toBlock: "latest"
+      toBlock: "0x662" // 1634
     }],
     id: 1
   };
 
-  http.post(url, JSON.stringify(payload));
+  http.post(url, JSON.stringify(payload), {
+    headers: { "Content-Type": "application/json" },
+  });
 }

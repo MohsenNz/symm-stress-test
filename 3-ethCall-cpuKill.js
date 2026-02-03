@@ -20,5 +20,7 @@ export default function() {
     id: 1
   };
 
-  http.post(url, JSON.stringify(payload));
+  http.post(url, JSON.stringify(payload), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
