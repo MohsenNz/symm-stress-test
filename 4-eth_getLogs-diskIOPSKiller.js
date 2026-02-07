@@ -3,6 +3,8 @@ import http from 'k6/http';
 
 const url = __ENV.RPC_URL;
 
+console.log("RPC_URL = ", url)
+
 export const options = {
   vus: 50,
   duration: '60s',
