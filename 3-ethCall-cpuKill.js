@@ -1,8 +1,7 @@
 // This is where 4-core nodes usually die.
 import http from 'k6/http';
 
-const url = "https://symmchain-node1.muon.net";
-// const url = "http://127.0.0.1:8449";
+const url = __ENV.RPC_URL;
 
 export const options = {
   vus: 1000,
@@ -14,8 +13,8 @@ export default function() {
     jsonrpc: "2.0",
     method: "eth_call",
     params: [{
-      to: "0xContract",
-      data: "0x..."
+      to: "0xce1721B24459Ab45c3bA17Bf5C55A8D740956CBB", // contract address
+      data: "0x..." // TODO
     }, "latest"],
     id: 1
   };

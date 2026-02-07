@@ -1,7 +1,6 @@
 import http from 'k6/http';
 
-const url = "https://symmchain-node1.muon.net";
-// const url = "http://127.0.0.1:8449";
+const url = __ENV.RPC_URL;
 
 export const options = {
   vus: 500,
