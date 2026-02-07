@@ -1,7 +1,8 @@
 // This is where 4-core nodes usually die.
 import http from 'k6/http';
+import { unOpt } from './util.js'
 
-const url = __ENV.RPC_URL;
+const url = unOpt(__ENV.RPC_URL);
 
 console.log("RPC_URL = ", url)
 

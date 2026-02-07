@@ -1,7 +1,8 @@
 // This can lock your node for minutes
 import http from 'k6/http';
+import { unOpt } from './util.js'
 
-const url = __ENV.RPC_URL;
+const url = unOpt(__ENV.RPC_URL);
 
 console.log("RPC_URL = ", url)
 
