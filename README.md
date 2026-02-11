@@ -15,7 +15,7 @@ k6 run --vus 500 --duration 120s <test-name> --summary-mode full -e RPC_URL=http
 ## For 3-ethCall-cpuKill
 
 ```bash
-RPC_URL=https://symmchain-node1.muon.net k6 run 3-ethCall-cpuKill.js --summary-mode full -e RPC_URL=$RPC_URL TX=$(./mktx-ethCall-cpuKill.bash)
+k6 run 3-ethCall-cpuKill.js --summary-mode full -e RPC_URL=$RPC_URL TX=$(./mktx-ethCall-cpuKill.bash)
 ```
 
 ## For write calls (needed sign)
