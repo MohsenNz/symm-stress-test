@@ -12,6 +12,12 @@ k6 run --vus 500 --duration 120s <test-name> --summary-mode full -e RPC_URL=http
 
 `--vus` : virtual users
 
+## For 3-ethCall-cpuKill
+
+```bash
+RPC_URL=https://symmchain-node1.muon.net k6 run 3-ethCall-cpuKill.js --summary-mode full -e RPC_URL=$RPC_URL TX=$(./mktx-ethCall-cpuKill.bash)
+```
+
 ## For write calls (needed sign)
 
 Get get signed tx from `cast` and use it wit k6. (becase k6 can't sign tx)
