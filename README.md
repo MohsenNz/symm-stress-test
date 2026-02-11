@@ -17,5 +17,5 @@ k6 run --vus 500 --duration 120s <test-name> --summary-mode full -e RPC_URL=http
 ```bash
 k6 run 3-ethCall-cpuKill.js --summary-mode full \
   -e RPC_URL=https://symmchain-node1.muon.net \
-  -e DATA=$(cast calldata "stress(uint256)" 10000)
+  -e DATA=$(cast calldata "stress(uint256)" 20000)
 ```
