@@ -3,7 +3,7 @@ import http from 'k6/http';
 import { unOpt } from './util.js'
 
 const url = unOpt(__ENV.RPC_URL);
-const tx = unOpt(__ENV.TX);
+const data = unOpt(__ENV.DATA);
 
 export const options = {
   vus: 1000,
@@ -15,8 +15,8 @@ export default function() {
     jsonrpc: "2.0",
     method: "eth_call",
     params: [{
-      to: "0xce1721B24459Ab45c3bA17Bf5C55A8D740956CBB", // contract address
-      data: tx
+      to: "0xFfa11031E564230772C969d6a15a0dDdE5889D9b", // contract address
+      data: data
     }, "latest"],
     id: 1
   };
