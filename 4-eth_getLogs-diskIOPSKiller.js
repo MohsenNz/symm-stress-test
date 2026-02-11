@@ -4,8 +4,6 @@ import { unOpt } from './util.js'
 
 const url = unOpt(__ENV.RPC_URL);
 
-console.log("RPC_URL = ", url)
-
 export const options = {
   vus: 50,
   duration: '60s',
