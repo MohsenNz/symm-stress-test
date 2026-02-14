@@ -80,8 +80,7 @@ async function main() {
         const success = receipt.status === 1 ? true : false;
         const txHash = tx.hash;
         const blockNumber = receipt.blockNumber;
-        txRes[i] = { sentElapsed, minedElapsed, success, txHash, blockNumber }
-
+        txRes.push({ sentElapsed, minedElapsed, success, txHash, blockNumber })
       } catch (err: any) {
         console.error(`Tx ${i} failed: ${err.message}`);
       }
