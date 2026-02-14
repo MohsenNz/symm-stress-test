@@ -25,7 +25,9 @@ const wallets = privates.map((pk) => new ethers.Wallet(pk, provider))
 type txResult = {
   sentElapsed: number, // seconds
   minedElapsed: number, // seconds
-  success: boolean
+  success: boolean,
+  txHash: string,
+  blockNumber: number,
 }
 
 type Out = {
@@ -76,7 +78,9 @@ async function main() {
 
         const minedElapsed = (Date.now() - sentAt) / 1000; // seconds
         const success = receipt.status === 1 ? true : false;
-        txRes[i] = { sentElapsed, minedElapsed, success }
+        const txHash = tx.hash;
+        const blockNumber = receipt.blockNumber;
+        txRes[i] = { sentElapsed, minedElapsed, success, txHash, blockNumber }
 
       } catch (err: any) {
         console.error(`Tx ${i} failed: ${err.message}`);
@@ -113,6 +117,11 @@ async function main() {
 
   // console.log(JSON.stringify(out, null, 2));
   printOut(out)
+
+  const faileds = txRes.filter((x) => !x.success)
+  const failedTxHashs = faileds.map((x) => x.txHash)
+
+  console.debug("Some Tx failed :\n", failedTxHashs.slice(0, 10))
 }
 
 function printOut(o: Out) {
