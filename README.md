@@ -19,3 +19,9 @@ k6 run 3-ethCall-cpuKill.js --summary-mode full \
   -e RPC_URL=https://symmchain-node1.muon.net \
   -e DATA=$(cast calldata "stress(uint256)" 20000)
 ```
+
+## Trace a TX failure reason
+
+```bash
+cast rpc debug_traceTransaction $TXHASH '{"tracer":"callTracer"}' --rpc-url $RPC_URL
+```
