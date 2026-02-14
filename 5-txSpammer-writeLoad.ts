@@ -46,7 +46,7 @@ async function main() {
   const txPromises: Promise<void>[] = [];
   const txRes: txResult[] = [];
 
-  for (let i = 0; i <= reqCount; i++) {
+  for (let i = 0; i < reqCount; i++) {
     const nonce = baseNonce + i;
 
     const txPromise = (async () => {
