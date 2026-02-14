@@ -16,8 +16,7 @@ async function main() {
 
   await fundAccounts(accounts);
 
-  console.log("Generated accounts:");
-  const wallets = accounts.map((w) => [w.address, w.privateKey, w.mnemonic].join("\n"));
+  const wallets = accounts.map((w) => [w.address, w.privateKey, w.mnemonic?.phrase].join("\n"));
   fs.writeFileSync("wallets.txt", wallets.join("\n\n"));
 }
 
