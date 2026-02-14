@@ -17,7 +17,8 @@ const provider = new ethers.JsonRpcProvider(RPC_URL);
 // const wallet = new ethers.Wallet(WALLET_PRIVATE_KEY, provider);
 // const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 
-const wallets = privates.map((pk) => new ethers.Wallet(pk, provider))
+const wallets_ = privates.map((pk) => new ethers.Wallet(pk, provider))
+const wallets = wallets_.slice(0, 100); // maximum is 100
 
 // ----------------------------------------------------------------------------
 // -- Types
