@@ -95,7 +95,7 @@ async function main() {
   console.debug("timeSuccsMined: ", timeSuccMineds); // debug
 
   const out: Out = {
-    reqCountAll: reqCount,
+    reqCountAll: wallets.length,
     reqCountSucc: txRes.filter((x) => x.success).length,
 
     sentAvgTimeAll: txRes.reduce((acc, x) => acc + x.sentElapsed, 0) / txRes.length,
