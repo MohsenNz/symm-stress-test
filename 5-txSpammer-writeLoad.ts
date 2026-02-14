@@ -104,8 +104,8 @@ function printOut(o: Out) {
   console.log("  med              :", o.medTime.toFixed(3))
   console.log("requst count:", o.reqCountAll)
   console.log("  all              :", o.reqCountAll.toFixed(3))
-  console.log("  success          :", o.reqCountSucc.toFixed(3), (o.reqCountSucc / o.reqCountAll).toFixed(3), "%")
-  console.log("  failed           :", reqCountFailed.toFixed(3), (reqCountFailed / o.reqCountAll).toFixed(3), "%")
+  console.log("  success          :", o.reqCountSucc.toFixed(3), `${(o.reqCountSucc / o.reqCountAll).toFixed(3)}%`)
+  console.log("  failed           :", reqCountFailed.toFixed(3), `${(reqCountFailed / o.reqCountAll).toFixed(3)}%`)
 }
 
 function median(numbers: number[]): number | undefined {
