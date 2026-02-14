@@ -27,7 +27,8 @@ type txResult = {
 }
 
 type Out = {
-  reqCount: number,
+  reqCountAll: number,
+  reqCountSucc: number,
   avgTimeAll: number,
   avgTimeSucc: number,
   minTime: number,
@@ -74,10 +75,11 @@ async function main() {
 
   await Promise.all(txPromises);
 
-  const timeSuccs = txRes.filter((x) => x.success === true).map((x) => x.elapsed);
+  const timeSuccs = txRes.filter((x) => x.success).map((x) => x.elapsed);
 
   const out: Out = {
-    reqCount,
+    reqCountAll: reqCount,
+    reqCountSucc: txRes.filter((x) => x.success).length,
     avgTimeAll: txRes.reduce((acc, x) => acc + x.elapsed, 0) / txRes.length,
     avgTimeSucc: timeSuccs.reduce((acc, x) => acc + x) / txRes.length,
     minTime: Math.min(...timeSuccs),
@@ -85,9 +87,24 @@ async function main() {
     medTime: median(timeSuccs) || 0,
   }
 
-  console.log(JSON.stringify(out, null, 2));
+  // console.log(JSON.stringify(out, null, 2));
+  printOut(out)
 }
 
+function printOut(o: Out) {
+  const reqCountFailed = o.reqCountAll - o.reqCountSucc
+
+  console.log("requst duration:")
+  console.log("  average (all)    :", o.avgTimeAll)
+  console.log("  average (success):", o.avgTimeSucc)
+  console.log("  min              :", o.minTime)
+  console.log("  max              :", o.maxTime)
+  console.log("  med              :", o.medTime)
+  console.log("requst count:", o.reqCountAll)
+  console.log("  all              :", o.reqCountAll)
+  console.log("  success          :", o.reqCountSucc, o.reqCountSucc / o.reqCountAll, "%")
+  console.log("  failed           :", reqCountFailed, reqCountFailed / o.reqCountAll, "%")
+}
 
 function median(numbers: number[]): number | undefined {
   if (numbers.length === 0) {
