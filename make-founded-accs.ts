@@ -17,7 +17,9 @@ async function main() {
   await fundAccounts(accounts);
 
   const wallets = accounts.map((w) => [w.address, w.privateKey, w.mnemonic?.phrase].join("\n"));
+  const privates = accounts.map((w) => w.privateKey);
   fs.writeFileSync("wallets.txt", wallets.join("\n\n"));
+  fs.writeFileSync("privates.txt", privates.join("\n"));
 }
 
 async function fundAccounts(accounts: ethers.HDNodeWallet[]) {
