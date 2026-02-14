@@ -1,0 +1,28 @@
+{
+  "name": "stress-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "5-txSpammer-writeLoad.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MohsenNz/symm-stress-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MohsenNz/symm-stress-test/issues"
+  },
+  "homepage": "https://github.com/MohsenNz/symm-stress-test#readme",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0"
+  }
+}

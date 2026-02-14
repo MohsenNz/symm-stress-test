@@ -13,6 +13,7 @@
         packages = [
           pkgs.k6
           pkgs.foundry
+          pkgs.nodejs_24
         ];
 
         shellHook = ''
