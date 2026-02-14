@@ -44,23 +44,19 @@ type Out = {
   mindMinTime: number,
   mindMaxTime: number,
   mindMedTime: number,
+
+  perBlockNumber: Map<number, number>,
 }
 
 //-------------------------------------------------------
 // -- Def
 
 async function main() {
-  // Get starting nonce
-  // const baseNonce = await wallet.getNonce();
-
   const txPromises: Promise<void>[] = [];
-  const txRes: txResult[] = [];
+  const txRess: txResult[] = [];
 
-  // for (let i = 0; i < reqCount; i++) {
   let i = 1;
   for (const wallet of wallets) {
-    // const nonce = baseNonce + i;
-
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 
     const txPromise = (async () => {
@@ -68,7 +64,6 @@ async function main() {
         const sentAt = Date.now();
 
         const tx = await contract.setNumber(i++, {
-          // nonce,
           gasLimit: 100_000
         });
         const sentElapsed = (Date.now() - sentAt) / 1000; // seconds
@@ -80,7 +75,7 @@ async function main() {
         const success = receipt.status === 1 ? true : false;
         const txHash = tx.hash;
         const blockNumber = receipt.blockNumber;
-        txRes.push({ sentElapsed, minedElapsed, success, txHash, blockNumber })
+        txRess.push({ sentElapsed, minedElapsed, success, txHash, blockNumber })
       } catch (err: any) {
         console.error(`Tx ${i} failed: ${err.message}`);
       }
@@ -91,36 +86,45 @@ async function main() {
 
   await Promise.all(txPromises);
 
-  const timeSuccSents = txRes.filter((x) => x.success).map((x) => x.sentElapsed);
-  const timeSuccMineds = txRes.filter((x) => x.success).map((x) => x.minedElapsed);
+  const timeSuccSents = txRess.filter((x) => x.success).map((x) => x.sentElapsed);
+  const timeSuccMineds = txRess.filter((x) => x.success).map((x) => x.minedElapsed);
 
   console.debug("timeSuccsSent: ", timeSuccSents); // debug
   console.debug("timeSuccsMined: ", timeSuccMineds); // debug
 
+  const perBlockNumber = new Map<number, number>();
+  const l = txRess.map((x) => x.blockNumber)
+  for (const bn of l) {
+    perBlockNumber.set(bn, (perBlockNumber.get(bn) ?? 0) + 1)
+  }
+
   const out: Out = {
     reqCountAll: wallets.length,
-    reqCountSucc: txRes.filter((x) => x.success).length,
+    reqCountSucc: txRess.filter((x) => x.success).length,
 
-    sentAvgTimeAll: txRes.reduce((acc, x) => acc + x.sentElapsed, 0) / txRes.length,
-    sentAvgTimeSucc: timeSuccSents.reduce((acc, x) => acc + x, 0) / txRes.length,
+    sentAvgTimeAll: txRess.reduce((acc, x) => acc + x.sentElapsed, 0) / txRess.length,
+    sentAvgTimeSucc: timeSuccSents.reduce((acc, x) => acc + x, 0) / txRess.length,
     sentMinTime: Math.min(...timeSuccSents),
     sentMaxTime: Math.max(...timeSuccSents),
     sentMedTime: median(timeSuccSents) || 0,
 
-    mindAvgTimeAll: txRes.reduce((acc, x) => acc + x.minedElapsed, 0) / txRes.length,
-    mindAvgTimeSucc: timeSuccMineds.reduce((acc, x) => acc + x, 0) / txRes.length,
+    mindAvgTimeAll: txRess.reduce((acc, x) => acc + x.minedElapsed, 0) / txRess.length,
+    mindAvgTimeSucc: timeSuccMineds.reduce((acc, x) => acc + x, 0) / txRess.length,
     mindMinTime: Math.min(...timeSuccMineds),
     mindMaxTime: Math.max(...timeSuccMineds),
     mindMedTime: median(timeSuccMineds) || 0,
+
+    perBlockNumber
   }
 
   // console.log(JSON.stringify(out, null, 2));
   printOut(out)
 
-  const faileds = txRes.filter((x) => !x.success)
+  const faileds = txRess.filter((x) => !x.success)
   const failedTxHashs = faileds.map((x) => x.txHash)
 
-  console.debug("Some Tx failed :\n", failedTxHashs.slice(0, 10))
+  if (failedTxHashs.length > 0)
+    console.debug("Some Tx failed :\n", failedTxHashs.slice(0, 10))
 }
 
 function printOut(o: Out) {
@@ -142,6 +146,10 @@ function printOut(o: Out) {
   console.log("  all              :", o.reqCountAll)
   console.log("  success          :", o.reqCountSucc, `${(o.reqCountSucc / o.reqCountAll * 100).toFixed(1)}%`)
   console.log("  failed           :", reqCountFailed, `${(reqCountFailed / o.reqCountAll * 100).toFixed(1)}%`)
+  console.log("tx per block:")
+  for (const x of o.perBlockNumber) {
+    console.log(`  blocknumber=${x[0]} tx-count: ${x[1]}`)
+  }
 }
 
 function median(numbers: number[]): number | undefined {
