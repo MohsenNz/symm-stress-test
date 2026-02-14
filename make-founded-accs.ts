@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import fs from "fs";
 
 const PK = process.env.PK!;
 const RPC_URL = process.env.RPC_URL!;
@@ -16,9 +17,8 @@ async function main() {
   await fundAccounts(accounts);
 
   console.log("Generated accounts:");
-  accounts.forEach((w, i) => {
-    console.log(i, w.address);
-  });
+  const wallets = accounts.map((w) => [w.address, w.privateKey, w.mnemonic].join("\n"));
+  fs.writeFileSync("wallets.txt", wallets.join("\n\n"));
 }
 
 async function fundAccounts(accounts: ethers.HDNodeWallet[]) {
