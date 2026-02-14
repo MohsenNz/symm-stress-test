@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
+import { privates } from "./privates";
 
 // ----------------------------------------------------------------------------
 // -- CONFIG
 const RPC_URL = unOpt(process.env.RPC_URL);
-const WALLET_PRIVATE_KEY = unOpt(process.env.PK);
+// const WALLET_PRIVATE_KEY = unOpt(process.env.PK);
 const CONTRACT_ADDRESS = "0x356380855afCb805d4Fc1f55e92089a05BEADF18";
 const ABI = [
   "function setNumber(uint256 num) external"
@@ -13,8 +14,10 @@ const reqCount = 10;
 // ----------------------------------------------------------------------------
 // -- PROVIDER & WALLET
 const provider = new ethers.JsonRpcProvider(RPC_URL);
-const wallet = new ethers.Wallet(WALLET_PRIVATE_KEY, provider);
-const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+// const wallet = new ethers.Wallet(WALLET_PRIVATE_KEY, provider);
+// const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
+
+const wallets = privates.map((pk) => new ethers.Wallet(pk, provider))
 
 // ----------------------------------------------------------------------------
 // -- Types
@@ -46,20 +49,24 @@ type Out = {
 
 async function main() {
   // Get starting nonce
-  const baseNonce = await wallet.getNonce();
+  // const baseNonce = await wallet.getNonce();
 
   const txPromises: Promise<void>[] = [];
   const txRes: txResult[] = [];
 
-  for (let i = 0; i < reqCount; i++) {
-    const nonce = baseNonce + i;
+  // for (let i = 0; i < reqCount; i++) {
+  let i = 1;
+  for (const wallet of wallets) {
+    // const nonce = baseNonce + i;
+
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 
     const txPromise = (async () => {
       try {
         const sentAt = Date.now();
 
-        const tx = await contract.setNumber(i, {
-          nonce,
+        const tx = await contract.setNumber(i++, {
+          // nonce,
           gasLimit: 100_000
         });
         const sentElapsed = (Date.now() - sentAt) / 1000; // seconds
