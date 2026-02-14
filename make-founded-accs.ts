@@ -23,7 +23,7 @@ async function main() {
 }
 
 async function fundAccounts(accounts: ethers.HDNodeWallet[]) {
-  const amount = ethers.parseEther("5");
+  const amount = ethers.parseEther("3");
 
   let nonce = await master.getNonce();
 
