@@ -89,8 +89,8 @@ async function main() {
   const timeSuccSents = txRess.filter((x) => x.success).map((x) => x.sentElapsed);
   const timeSuccMineds = txRess.filter((x) => x.success).map((x) => x.minedElapsed);
 
-  console.debug("timeSuccsSent: ", timeSuccSents); // debug
-  console.debug("timeSuccsMined: ", timeSuccMineds); // debug
+  // console.debug("timeSuccsSent: ", timeSuccSents); // debug
+  // console.debug("timeSuccsMined: ", timeSuccMineds); // debug
 
   const perBlockNumber = new Map<number, number>();
   const l = txRess.map((x) => x.blockNumber)
