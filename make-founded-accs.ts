@@ -24,13 +24,17 @@ async function main() {
 async function fundAccounts(accounts: ethers.HDNodeWallet[]) {
   const amount = ethers.parseEther("5");
 
+  let nonce = await master.getNonce();
+
   for (const w of accounts) {
     const tx = await master.sendTransaction({
       to: w.address,
-      value: amount
+      value: amount,
+      nonce,
     });
 
-    await tx.wait()
+    await tx.wait();
+    nonce += 1;
   }
 
   console.log("All accounts funded.");
