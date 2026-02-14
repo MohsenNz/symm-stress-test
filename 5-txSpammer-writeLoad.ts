@@ -5,8 +5,8 @@ import path from "path";
 // ----------------------------------------------------------------------------
 // -- CONFIG
 const RPC_URL = unOpt(process.env.RPC_URL);
-const WALLET_PRIVATE_KEY = unOpt(process.env.PK || "your-private-key");
-const CONTRACT_ADDRESS = unOpt("0x356380855afCb805d4Fc1f55e92089a05BEADF18");
+const WALLET_PRIVATE_KEY = unOpt(process.env.PK);
+const CONTRACT_ADDRESS = "0x356380855afCb805d4Fc1f55e92089a05BEADF18";
 const ABI = [
   "function setNumber(uint256 num) external"
 ];
