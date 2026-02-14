@@ -24,22 +24,14 @@ async function main() {
 async function fundAccounts(accounts: ethers.HDNodeWallet[]) {
   const amount = ethers.parseEther("5");
 
-  const txs: Promise<any>[] = [];
-
   for (const w of accounts) {
-    const tx = master.sendTransaction({
+    const tx = await master.sendTransaction({
       to: w.address,
       value: amount
     });
 
-    txs.push(tx);
+    await tx.wait()
   }
-
-  const sent = await Promise.all(txs);
-
-  console.log("Transactions sent. Waiting for confirmations...");
-
-  await Promise.all(sent.map(tx => tx.wait()));
 
   console.log("All accounts funded.");
 }
