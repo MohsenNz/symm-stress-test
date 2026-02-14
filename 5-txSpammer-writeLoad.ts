@@ -77,6 +77,8 @@ async function main() {
 
   const timeSuccs = txRes.filter((x) => x.success).map((x) => x.elapsed);
 
+  console.debug("timeSuccs: ", timeSuccs); // debug
+
   const out: Out = {
     reqCountAll: reqCount,
     reqCountSucc: txRes.filter((x) => x.success).length,
@@ -95,15 +97,15 @@ function printOut(o: Out) {
   const reqCountFailed = o.reqCountAll - o.reqCountSucc
 
   console.log("requst duration:")
-  console.log("  average (all)    :", o.avgTimeAll)
-  console.log("  average (success):", o.avgTimeSucc)
-  console.log("  min              :", o.minTime)
-  console.log("  max              :", o.maxTime)
-  console.log("  med              :", o.medTime)
+  console.log("  average (all)    :", o.avgTimeAll.toFixed(3))
+  console.log("  average (success):", o.avgTimeSucc.toFixed(3))
+  console.log("  min              :", o.minTime.toFixed(3))
+  console.log("  max              :", o.maxTime.toFixed(3))
+  console.log("  med              :", o.medTime.toFixed(3))
   console.log("requst count:", o.reqCountAll)
-  console.log("  all              :", o.reqCountAll)
-  console.log("  success          :", o.reqCountSucc, o.reqCountSucc / o.reqCountAll, "%")
-  console.log("  failed           :", reqCountFailed, reqCountFailed / o.reqCountAll, "%")
+  console.log("  all              :", o.reqCountAll.toFixed(3))
+  console.log("  success          :", o.reqCountSucc.toFixed(3), (o.reqCountSucc / o.reqCountAll).toFixed(3), "%")
+  console.log("  failed           :", reqCountFailed.toFixed(3), (reqCountFailed / o.reqCountAll).toFixed(3), "%")
 }
 
 function median(numbers: number[]): number | undefined {
