@@ -1,6 +1,4 @@
 import { ethers } from "ethers";
-import fs from "fs";
-import path from "path";
 
 // ----------------------------------------------------------------------------
 // -- CONFIG
@@ -83,7 +81,7 @@ async function main() {
     reqCountAll: reqCount,
     reqCountSucc: txRes.filter((x) => x.success).length,
     avgTimeAll: txRes.reduce((acc, x) => acc + x.elapsed, 0) / txRes.length,
-    avgTimeSucc: timeSuccs.reduce((acc, x) => acc + x) / txRes.length,
+    avgTimeSucc: timeSuccs.reduce((acc, x) => acc + x, 0) / txRes.length,
     minTime: Math.min(...timeSuccs),
     maxTime: Math.max(...timeSuccs),
     medTime: median(timeSuccs) || 0,
@@ -102,10 +100,10 @@ function printOut(o: Out) {
   console.log("  min              :", o.minTime.toFixed(3))
   console.log("  max              :", o.maxTime.toFixed(3))
   console.log("  med              :", o.medTime.toFixed(3))
-  console.log("requst count:", o.reqCountAll)
-  console.log("  all              :", o.reqCountAll.toFixed(3))
-  console.log("  success          :", o.reqCountSucc.toFixed(3), `${(o.reqCountSucc / o.reqCountAll).toFixed(3)}%`)
-  console.log("  failed           :", reqCountFailed.toFixed(3), `${(reqCountFailed / o.reqCountAll).toFixed(3)}%`)
+  console.log("requst count:")
+  console.log("  all              :", o.reqCountAll)
+  console.log("  success          :", o.reqCountSucc, `${(o.reqCountSucc / o.reqCountAll)}%`)
+  console.log("  failed           :", reqCountFailed, `${(reqCountFailed / o.reqCountAll)}%`)
 }
 
 function median(numbers: number[]): number | undefined {
