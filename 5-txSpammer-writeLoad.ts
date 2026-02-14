@@ -20,18 +20,25 @@ const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 // -- Types
 
 type txResult = {
-  elapsed: number, // seconds
+  sentElapsed: number, // seconds
+  minedElapsed: number, // seconds
   success: boolean
 }
 
 type Out = {
   reqCountAll: number,
   reqCountSucc: number,
-  avgTimeAll: number,
-  avgTimeSucc: number,
-  minTime: number,
-  maxTime: number,
-  medTime: number,
+  sentAvgTimeAll: number,
+  sentAvgTimeSucc: number,
+  sentMinTime: number,
+  sentMaxTime: number,
+  sentMedTime: number,
+
+  mindAvgTimeAll: number,
+  mindAvgTimeSucc: number,
+  mindMinTime: number,
+  mindMaxTime: number,
+  mindMedTime: number,
 }
 
 //-------------------------------------------------------
@@ -48,20 +55,21 @@ async function main() {
     const nonce = baseNonce + i;
 
     const txPromise = (async () => {
-      const startTime = Date.now();
-
       try {
+        const sentAt = Date.now();
+
         const tx = await contract.setNumber(i, {
           nonce,
           gasLimit: 100_000
         });
+        const sentElapsed = (Date.now() - sentAt) / 1000; // seconds
 
         // Wait for transaction to be mined
         const receipt = await tx.wait();
 
-        const elapsed = (Date.now() - startTime) / 1000; // seconds
+        const minedElapsed = (Date.now() - sentAt) / 1000; // seconds
         const success = receipt.status === 1 ? true : false;
-        txRes[i] = { elapsed, success }
+        txRes[i] = { sentElapsed, minedElapsed, success }
 
       } catch (err: any) {
         console.error(`Tx ${i} failed: ${err.message}`);
@@ -73,18 +81,27 @@ async function main() {
 
   await Promise.all(txPromises);
 
-  const timeSuccs = txRes.filter((x) => x.success).map((x) => x.elapsed);
+  const timeSuccSents = txRes.filter((x) => x.success).map((x) => x.sentElapsed);
+  const timeSuccMineds = txRes.filter((x) => x.success).map((x) => x.minedElapsed);
 
-  console.debug("timeSuccs: ", timeSuccs); // debug
+  console.debug("timeSuccsSent: ", timeSuccSents); // debug
+  console.debug("timeSuccsMined: ", timeSuccMineds); // debug
 
   const out: Out = {
     reqCountAll: reqCount,
     reqCountSucc: txRes.filter((x) => x.success).length,
-    avgTimeAll: txRes.reduce((acc, x) => acc + x.elapsed, 0) / txRes.length,
-    avgTimeSucc: timeSuccs.reduce((acc, x) => acc + x, 0) / txRes.length,
-    minTime: Math.min(...timeSuccs),
-    maxTime: Math.max(...timeSuccs),
-    medTime: median(timeSuccs) || 0,
+
+    sentAvgTimeAll: txRes.reduce((acc, x) => acc + x.sentElapsed, 0) / txRes.length,
+    sentAvgTimeSucc: timeSuccSents.reduce((acc, x) => acc + x, 0) / txRes.length,
+    sentMinTime: Math.min(...timeSuccSents),
+    sentMaxTime: Math.max(...timeSuccSents),
+    sentMedTime: median(timeSuccSents) || 0,
+
+    mindAvgTimeAll: txRes.reduce((acc, x) => acc + x.minedElapsed, 0) / txRes.length,
+    mindAvgTimeSucc: timeSuccMineds.reduce((acc, x) => acc + x, 0) / txRes.length,
+    mindMinTime: Math.min(...timeSuccMineds),
+    mindMaxTime: Math.max(...timeSuccMineds),
+    mindMedTime: median(timeSuccMineds) || 0,
   }
 
   // console.log(JSON.stringify(out, null, 2));
@@ -94,16 +111,22 @@ async function main() {
 function printOut(o: Out) {
   const reqCountFailed = o.reqCountAll - o.reqCountSucc
 
-  console.log("requst duration:")
-  console.log("  average (all)    :", o.avgTimeAll.toFixed(3))
-  console.log("  average (success):", o.avgTimeSucc.toFixed(3))
-  console.log("  min              :", o.minTime.toFixed(3))
-  console.log("  max              :", o.maxTime.toFixed(3))
-  console.log("  med              :", o.medTime.toFixed(3))
+  console.log("requst duration (sent):")
+  console.log("  average (all)    :", o.sentAvgTimeAll.toFixed(3))
+  console.log("  average (success):", o.sentAvgTimeSucc.toFixed(3))
+  console.log("  min              :", o.sentMinTime.toFixed(3))
+  console.log("  max              :", o.sentMaxTime.toFixed(3))
+  console.log("  med              :", o.sentMedTime.toFixed(3))
+  console.log("requst duration (mined):")
+  console.log("  average (all)    :", o.mindAvgTimeAll.toFixed(3))
+  console.log("  average (success):", o.mindAvgTimeSucc.toFixed(3))
+  console.log("  min              :", o.mindMinTime.toFixed(3))
+  console.log("  max              :", o.mindMaxTime.toFixed(3))
+  console.log("  med              :", o.mindMedTime.toFixed(3))
   console.log("requst count:")
   console.log("  all              :", o.reqCountAll)
-  console.log("  success          :", o.reqCountSucc, `${(o.reqCountSucc / o.reqCountAll)}%`)
-  console.log("  failed           :", reqCountFailed, `${(reqCountFailed / o.reqCountAll)}%`)
+  console.log("  success          :", o.reqCountSucc, `${(o.reqCountSucc / o.reqCountAll * 100).toFixed(1)}%`)
+  console.log("  failed           :", reqCountFailed, `${(reqCountFailed / o.reqCountAll * 100).toFixed(1)}%`)
 }
 
 function median(numbers: number[]): number | undefined {
