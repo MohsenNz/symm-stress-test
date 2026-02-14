@@ -148,9 +148,10 @@ function printOut(o: Out) {
   console.log("  success          :", o.reqCountSucc, `${(o.reqCountSucc / o.reqCountAll * 100).toFixed(1)}%`)
   console.log("  failed           :", reqCountFailed, `${(reqCountFailed / o.reqCountAll * 100).toFixed(1)}%`)
   console.log("tx per block:")
-  for (const x of o.perBlockNumber) {
-    console.log(`  blocknumber=${x[0]} tx-count: ${x[1]}`)
-  }
+  // TODO
+  // for (const x of o.perBlockNumber) {
+  //   console.log(`  blocknumber=${x[0]} tx-count: ${x[1]}`)
+  // }
 }
 
 function median(numbers: number[]): number | undefined {
